@@ -1,0 +1,182 @@
+<button class="arrowbutton" (click)="goBack()">
+  <mat-icon>arrow_back</mat-icon>
+</button>
+
+<!-- -------------------------------pie chart-------------- -->
+
+<ng-container>
+  <div class="userexampage">
+    <div class="col-lg-4 canvasheading">
+      <h1 class="text-center ml-6">Exam Report for User's</h1>
+    </div>
+
+    <mat-form-field appearance="fill" class="left ml-4">
+      <mat-label>Select an exam code</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="codeControl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="oncodeSelection()"
+      >
+        <mat-option *ngFor="let examCode of filteredCodes" [value]="examCode">
+          {{ examCode }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="left ml-2">
+      <mat-label>Select an user name</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="usernamecontrol"
+        [matAutocomplete]="auto2"
+      />
+      <mat-autocomplete
+        #auto2="matAutocomplete"
+        (optionSelected)="examresult(username2, codeControl.value)"
+      >
+        <mat-option
+          *ngFor="let userName of filteredUsernames"
+          [value]="userName"
+        >
+          {{ userName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+
+    <img class="mb-3"
+      *ngIf="username3 && examname && totalmarks && gotmarks"
+      id="pdf-icon"
+      (click)="generatePDF()"
+      src="assets/5467016.svg"
+      alt="pdf"
+    />
+
+    <div></div>
+    <div class="bootstrap-wrapper" id="result" *ngIf="username3 && examname">
+      <div class="container">
+        <div class="row">
+          <mat-card class="card col-md-8">
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-center">
+                <div class="left">
+                  <mat-icon class="mat-24" style="margin-right: 10px"
+                    >person</mat-icon
+                  >
+                </div>
+
+                <div class="right float-right">
+                  <h1><b>User Exam Result</b></h1>
+                </div>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>USER NAME:</strong> {{ this.username3 }}
+                </li>
+                <li class="list-group-item">
+                  <strong>EXAM NAME:</strong> {{ this.examname }}
+                </li>
+                <li class="list-group-item">
+                  <strong>TOTAL MARKS:</strong> {{ this.totalmarks }}
+                </li>
+                <li class="list-group-item">
+                  <strong>MARKS:</strong> {{ this.gotmarks }}
+                </li>
+              </ul>
+            </div>
+            <mat-list *ngFor="let question of questions; let i = index">
+              <span style="display: inline-block">{{ i + 1 }}. </span>
+              <span
+                style="display: inline-block"
+                [innerHTML]="question.content"
+              ></span>
+              <div *ngIf="question.subject?.name == 'CODING'">
+                <mat-list-item>
+                  <div style="white-space: nowrap">
+                    <div
+                      *ngIf="correct == 'correct'"
+                      style="color: rgb(0, 255, 51); font-size: large"
+                    >
+                      Your Code is Correct
+                    </div>
+                    <div
+                      *ngIf="correct != 'correct'"
+                      style="color: red; font-size: large"
+                    >
+                      Your Code is Wrong
+                    </div>
+                  </div>
+                </mat-list-item>
+              </div>
+              <div *ngIf="question.subject?.name != 'CODING'">
+                <mat-list-item>
+                  <div style="white-space: nowrap">
+                    <label class="option">A : {{ question.optionA }}</label>
+                  </div>
+                </mat-list-item>
+
+                <mat-list-item>
+                  <div style="white-space: nowrap">
+                    <label class="option">B : {{ question.optionB }}</label>
+                  </div>
+                </mat-list-item>
+
+                <mat-list-item>
+                  <div class="white-space:nowrap">
+                    <label class="option">C : {{ question.optionC }}</label>
+                  </div>
+                </mat-list-item>
+
+                <mat-list-item>
+                  <div class="white-space:nowrap">
+                    <label class="option">D : {{ question.optionD }}</label>
+                  </div>
+                </mat-list-item>
+                <mat-list-item>
+                  <div
+                    class="white-space:nowrap"
+                    *ngFor="let answer of userAnswers"
+                  >
+                    <label
+                      class="option"
+                      style="color: red; font-size: large"
+                      *ngIf="
+                        question.id == answer.question?.id &&
+                        answer.userAnswer != question.answer
+                      "
+                      >UserAnswer : {{ answer.userAnswer }}</label
+                    >
+                    <label
+                      class="option"
+                      style="color: rgb(0, 255, 51); font-size: large"
+                      *ngIf="
+                        question.id == answer.question?.id &&
+                        answer.userAnswer == question.answer
+                      "
+                      >UserAnswer : {{ answer.userAnswer }}</label
+                    >
+                  </div>
+                </mat-list-item>
+                <mat-list-item>
+                  <div class="white-space:nowrap">
+                    <label
+                      class="option"
+                      style="color: rgb(7, 7, 245); font-size: large"
+                      >CorrectAnswer : {{ question.answer }}</label
+                    >
+                  </div>
+                </mat-list-item>
+              </div>
+            </mat-list>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
